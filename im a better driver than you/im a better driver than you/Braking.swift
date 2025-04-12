@@ -15,6 +15,9 @@ struct Braking: View {
     @State private var isDriving: Bool = false  // Flag to track if the user is driving
     @State private var count = 0
     
+    // Display score in the home tab
+    @ObservedObject var scoreManager = ScoreManager.shared
+    
     var body: some View {
         ZStack {
             if isBrakingHard && (currentSpeed ?? 0 ) > 0.0 {
@@ -24,6 +27,9 @@ struct Braking: View {
             }
             
             VStack {
+                Text("Score: \(scoreManager.currentScore)")
+                    .font(.system(size: 40, weight: .bold))
+                    .padding()
                 
                 (Text(isDriving ? "You're Driving!" : "Not Driving")
                     .font(.largeTitle)

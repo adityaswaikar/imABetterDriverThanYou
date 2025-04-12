@@ -50,22 +50,29 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
     
     
     private var lastBrakeTime: Date? // This is for the cooldown for the brake score deduction
+    var previousTime: Date?
 
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         guard let latestLocation = locations.last else { return }
         // Get the current speed from the most recent location update
         let currentSpeed = latestLocation.speed  // in m/s
+        
+        // Calculation for timeDelta
+        let currentTime = Date()
 
-        if let lastSpeed = previousSpeed, currentSpeed >= 0 {
+        if let lastSpeed = previousSpeed, let lastTime = previousTime, currentSpeed >= 0 {
             // If we have a previous speed, calculate the rate of deceleration
             let delta = lastSpeed - currentSpeed
             // Calculate time difference between the current and previous speed measurement
-            let timeDelta = latestLocation.timestamp.timeIntervalSince1970 - (locations.dropLast().last?.timestamp.timeIntervalSince1970 ?? latestLocation.timestamp.timeIntervalSince1970)
+//            let timeDelta = latestLocation.timestamp.timeIntervalSince1970 - (locations.dropLast().last?.timestamp.timeIntervalSince1970 ?? latestLocation.timestamp.timeIntervalSince1970)
+            
+            let timeDelta = currentTime.timeIntervalSince(lastTime)
+            
             // Calculate the rate of change in speed (acceleration/deceleration)
             let rateOfChange = delta / timeDelta
             
-            print("This is the current acceleration: \(rateOfChange)")
+            print("This is the current acceleration (Rate of Change): \(rateOfChange)")
 
             // If the deceleration exceeds the threshold, log a warning
             if rateOfChange >= decelerationThreshold {
