@@ -42,7 +42,6 @@ struct Braking: View {
         }
         .padding()
         .onAppear {
-            currentSpeed = 0
             speedMonitor.startTrackingSpeed { speed in
                         currentSpeed = speed
             }
