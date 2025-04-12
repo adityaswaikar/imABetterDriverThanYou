@@ -18,7 +18,8 @@ struct Braking: View {
     
     var body: some View {
         ZStack {
-            (accelerationCheck.isBrakingHard ? Color.red : Color.clear)
+            (accelerationCheck.isBrakingHard ? Text(String(accelerationCheck.isBrakingHard)
+                                                   ).foregroundColor(.red) : Text("THIS IS NOT BRAKING HARD RN"))
                 .edgesIgnoringSafeArea(.all)
             
             VStack {
