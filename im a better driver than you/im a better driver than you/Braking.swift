@@ -20,7 +20,7 @@ struct Braking: View {
         VStack {
             Text(isDriving ? "You're Driving!" : "Not Driving")
                 .font(.largeTitle)
-                .foregroundColor(.black)
+                .foregroundColor(Color.primary)
                 .multilineTextAlignment(.center)
             
             if let speed = currentSpeed {
@@ -28,9 +28,10 @@ struct Braking: View {
                     .font(.system(size: 50, weight: .bold))
                     .padding(.top, 5)
                 
+                // Dynamically adjusts text color for light/dark mode
                 Text("Speed (MPH)")
                     .font(.title2)
-                    .foregroundColor(.gray)
+                    .foregroundColor(Color.primary)
             }
 
             if let warning = brakingWarning {
@@ -47,14 +48,8 @@ struct Braking: View {
                     withAnimation(.easeInOut(duration: 0.3)) {
                         currentSpeed = speed
                         // Determine if driving based on speed threshold
-                        isDriving = (currentSpeed ?? 0) > 5.0  // You can adjust this threshold
+                        isDriving = (currentSpeed ?? 0) > 1.0  // You can adjust this threshold
                     }
-                }
-            }
-
-            if CMMotionActivityManager.isActivityAvailable() {
-                activityManager.startActivityUpdates(to: OperationQueue.main) { activity in
-                    // Optionally use activity data for a second layer of driving detection
                 }
             }
         }
