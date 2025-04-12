@@ -13,9 +13,11 @@ struct Braking: View {
     @State private var brakingWarning: String? = nil
     private let activityManager = CMMotionActivityManager()
     @State private var isDriving: Bool = false  // Flag to track if the user is driving
+    @StateObject var accelerationCheck = SpeedMonitor()
 
     
     var body: some View {
+           
         VStack {
             Text(isDriving ? "You're Driving!" : "Not Driving")
                 .font(.largeTitle)
