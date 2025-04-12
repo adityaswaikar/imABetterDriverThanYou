@@ -7,7 +7,6 @@
 
 import SwiftUI
 import CoreMotion
-import CoreLocation
 
 struct Braking: View {
     @State private var currentSpeed: Double? = nil
@@ -20,7 +19,7 @@ struct Braking: View {
         VStack {
             Text(isDriving ? "You're Driving!" : "Not Driving")
                 .font(.largeTitle)
-                .foregroundColor(.black)
+                .foregroundColor(.primary)
                 .multilineTextAlignment(.center)
             
             if let speed = currentSpeed {
@@ -47,7 +46,7 @@ struct Braking: View {
                     withAnimation(.easeInOut(duration: 0.3)) {
                         currentSpeed = speed
                         // Determine if driving based on speed threshold
-                        isDriving = (currentSpeed ?? 0) > 5.0  // You can adjust this threshold
+                        isDriving = (currentSpeed ?? 0) > 1.0  // You can adjust this threshold
                     }
                 }
             }
