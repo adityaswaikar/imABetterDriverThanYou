@@ -7,9 +7,16 @@
 //  This file now tracks sudden changes in speed (e.g., hard braking) during a driving session using CoreLocation.
 import Foundation
 import CoreLocation
-// Threshold value in m/s² used to determine what qualifies as a sudden deceleration
+import SwiftUI
 
-let decelerationThreshold: Double = 3.0
+// Threshold value in m/s² used to determine what qualifies as a sudden deceleration
+let decelerationThreshold: Double = 5.0
+
+public class DrivingData: ObservableObject {
+    @Published var isBrakingHard: Bool = false
+}
+
+public let drivingData = DrivingData()
 
 // SpeedMonitor uses CoreLocation to monitor device speed and detect sudden deceleration events like hard braking
 public class SpeedMonitor: NSObject, CLLocationManagerDelegate {
@@ -57,6 +64,9 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate {
             // If the deceleration exceeds the threshold, log a warning
             if rateOfChange >= decelerationThreshold {
                 print("⚠️ Sudden deceleration detected: \(rateOfChange) m/s²")
+                drivingData.isBrakingHard = true
+            } else {
+                drivingData.isBrakingHard = false
             }
         }
 
