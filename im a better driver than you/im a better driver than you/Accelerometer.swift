@@ -61,6 +61,10 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate {
 
         // Update the previous speed for the next comparison
         previousSpeed = currentSpeed
+        
+        if currentSpeed >= 0 {
+            speedCallback?(currentSpeed * 2.23694) // Convert to MPH if desired
+        }
     }
 
     public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
