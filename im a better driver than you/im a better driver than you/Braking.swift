@@ -72,20 +72,18 @@ struct Braking: View {
         }
             .padding()
         .onAppear {
-            speedMonitor.startTrackingSpeed { speed in
+            speedMonitor.startTrackingSpeed(callback: { speed in
                 DispatchQueue.main.async {
                     withAnimation(.easeInOut(duration: 0.3)) {
                         currentSpeed = speed
-                        // Determine if driving based on speed threshold
-                        isDriving = (currentSpeed ?? 0) > 1.0  // You can adjust this threshold
+                        isDriving = (currentSpeed ?? 0) > 1.0
                         
-                        // Update speed limit when location changes significantly
                         if isDriving, let location = speedMonitor.lastLocation {
                             speedLimitManager.getCurrentSpeedLimit(for: location)
                         }
                     }
                 }
-            }
+            })
         }
         .onDisappear {
             speedMonitor.stopTrackingSpeed()
