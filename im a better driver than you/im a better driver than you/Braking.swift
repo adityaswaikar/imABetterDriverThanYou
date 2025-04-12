@@ -15,7 +15,7 @@ struct Braking: View {
     private let activityManager = CMMotionActivityManager()
     @State private var isDriving: Bool = false  // Flag to track if the user is driving
 
-
+    
     var body: some View {
         VStack {
             Text(isDriving ? "You're Driving!" : "Not Driving")
@@ -46,14 +46,15 @@ struct Braking: View {
                 DispatchQueue.main.async {
                     withAnimation(.easeInOut(duration: 0.3)) {
                         currentSpeed = speed
+                        // Determine if driving based on speed threshold
+                        isDriving = (currentSpeed ?? 0) > 5.0  // You can adjust this threshold
                     }
                 }
             }
-            
+
             if CMMotionActivityManager.isActivityAvailable() {
                 activityManager.startActivityUpdates(to: OperationQueue.main) { activity in
-                    guard let activity = activity else { return }
-                    isDriving = activity.walking && activity.confidence != .low
+                    // Optionally use activity data for a second layer of driving detection
                 }
             }
         }

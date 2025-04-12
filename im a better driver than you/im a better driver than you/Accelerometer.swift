@@ -24,7 +24,7 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.distanceFilter = 1 // Update for every ~1 meter moved
+        locationManager.distanceFilter = 0.5 // Update for every ~1 meter moved
     }
 
     public func startTrackingSpeed(callback: @escaping (Double) -> Void) {
