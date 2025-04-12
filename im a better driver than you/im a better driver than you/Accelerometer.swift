@@ -9,7 +9,7 @@ import Foundation
 import CoreLocation
 // Threshold value in m/s² used to determine what qualifies as a sudden deceleration
 
-let decelerationThreshold: Double = 3 // Was 0.70
+let decelerationThreshold: Double = 0.5 // Was 0.70
 var isBrakingHard: Bool = false
 
 // SpeedMonitor uses CoreLocation to monitor device speed and detect sudden deceleration events like hard braking
@@ -31,7 +31,7 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.distanceFilter = 0.5 // Update for every ~1 meter moved
+        locationManager.distanceFilter = 1 // Update for every ~1 meter moved
     }
 
     public func startTrackingSpeed(callback: @escaping (Double) -> Void) {
@@ -56,14 +56,16 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
         guard let latestLocation = locations.last else { return }
         // Get the current speed from the most recent location update
         let currentSpeed = latestLocation.speed  // in m/s
+        let everySecond = Date().addingTimeInterval(1)
+        print(everySecond)
 
         if let lastSpeed = previousSpeed, currentSpeed >= 0 {
             // If we have a previous speed, calculate the rate of deceleration
             let delta = lastSpeed - currentSpeed
             // Calculate time difference between the current and previous speed measurement
-            let timeDelta = latestLocation.timestamp.timeIntervalSince1970 - (locations.dropLast().last?.timestamp.timeIntervalSince1970 ?? latestLocation.timestamp.timeIntervalSince1970)
+            // let timeDelta = latestLocation.timestamp.timeIntervalSince1970 - (locations.dropLast().last?.timestamp.timeIntervalSince1970 ?? latestLocation.timestamp.timeIntervalSince1970)
             // Calculate the rate of change in speed (acceleration/deceleration)
-            let rateOfChange = delta / timeDelta
+            let rateOfChange = delta / (1 / delta)
             
             print("This is the current acceleration: \(rateOfChange)")
 
