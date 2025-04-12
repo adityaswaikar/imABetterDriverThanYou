@@ -23,9 +23,10 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
     private var resetBrakingWorkItem: DispatchWorkItem?
     
     // Reference to the Score
-    private let scoreManager = ScoreManager()
+    // private let scoreManager = ScoreManager()
+    var scoreManager = ScoreManager.shared
 
-    init(scoreManager: ScoreManager) {
+    override init() {
         // self.scoreManager = scoreManager
         super.init()
         locationManager.delegate = self
@@ -78,6 +79,7 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
                     lastBrakeTime = now
                     scoreManager.addScore(points: -5)
                 }
+                
             } else {
                 isBrakingHard = false
             }
@@ -98,5 +100,5 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
 }
 
 // Singleton instance of SpeedMonitor for use throughout the app
-public let speedMonitor = SpeedMonitor(scoreManager: ScoreManager.shared)
+public let speedMonitor = SpeedMonitor()
 
