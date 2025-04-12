@@ -51,23 +51,23 @@ struct Braking: View {
             }
         }
             .padding()
-        .onAppear {
-            speedMonitor.startTrackingSpeed { speed in
-                DispatchQueue.main.async {
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        currentSpeed = speed
-                        // Determine if driving based on speed threshold
-                        isDriving = (currentSpeed ?? 0) > 1.0  // You can adjust this threshold
+            .onAppear {
+                speedMonitor.startTrackingSpeed { speed in
+                    DispatchQueue.main.async {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            currentSpeed = speed
+                            // Determine if driving based on speed threshold
+                            isDriving = (currentSpeed ?? 0) > 1.0  // You can adjust this threshold
+                        }
                     }
                 }
             }
-        }
-        .onDisappear {
-            speedMonitor.stopTrackingSpeed()
-            activityManager.stopActivityUpdates()
+            .onDisappear {
+                speedMonitor.stopTrackingSpeed()
+                activityManager.stopActivityUpdates()
+            }
         }
     }
-}
 
 #Preview {
     Braking()
