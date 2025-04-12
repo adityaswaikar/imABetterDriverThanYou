@@ -9,7 +9,7 @@ import Foundation
 import CoreLocation
 // Threshold value in m/s² used to determine what qualifies as a sudden deceleration
 
-let decelerationThreshold: Double = 0.7
+let decelerationThreshold: Double = 3 // Was 0.70
 var isBrakingHard: Bool = false
 
 // SpeedMonitor uses CoreLocation to monitor device speed and detect sudden deceleration events like hard braking
@@ -21,8 +21,14 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
     // Stores the last known speed for comparison
     public var previousSpeed: CLLocationSpeed?
     private var resetBrakingWorkItem: DispatchWorkItem?
+    
+    // Reference to the Score
+    private let scoreManager = ScoreManager()
+    
+    public let speedMonitor = SpeedMonitor(scoreManager: ScoreManager.shared)
 
-    override init() {
+    init(scoreManager: ScoreManager) {
+        self.scoreManager = scoreManager
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -42,6 +48,9 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
         // Stop receiving location updates
         locationManager.stopUpdatingLocation()
     }
+    
+    
+    private var lastBrakeTime: Date? // This is for the cooldown for the brake score deduction
 
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
@@ -56,11 +65,21 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
             let timeDelta = latestLocation.timestamp.timeIntervalSince1970 - (locations.dropLast().last?.timestamp.timeIntervalSince1970 ?? latestLocation.timestamp.timeIntervalSince1970)
             // Calculate the rate of change in speed (acceleration/deceleration)
             let rateOfChange = delta / timeDelta
+            
+            print("This is the current acceleration: \(rateOfChange)")
 
             // If the deceleration exceeds the threshold, log a warning
             if rateOfChange >= decelerationThreshold {
-                isBrakingHard = true
+                let now = Date()
+                
+                // isBrakingHard = true
                 print("⚠️ Sudden deceleration detected: \(rateOfChange) m/s²")
+                
+                if lastBrakeTime == nil || now.timeIntervalSince(lastBrakeTime!) > 10 {
+                    isBrakingHard = true
+                    lastBrakeTime = now
+                    scoreManager.addScore(points: -5)
+                }
             } else {
                 isBrakingHard = false
             }
@@ -82,3 +101,4 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
 
 // Singleton instance of SpeedMonitor for use throughout the app
 public let speedMonitor = SpeedMonitor()
+

@@ -8,13 +8,14 @@
 import Foundation
 
 class ScoreManager: ObservableObject {
+    static let shared = ScoreManager()
     @Published var currentScore: Int = 0 {
            didSet {
                UserDefaults.standard.set(currentScore, forKey: "savedScore")
            }
        }
     
-    init() {
+     init() {
             self.currentScore = UserDefaults.standard.integer(forKey: "savedScore")
         }
     
