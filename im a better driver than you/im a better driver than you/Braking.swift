@@ -9,8 +9,8 @@ import SwiftUI
 import CoreMotion
 
 struct Braking: View {
-    @ObservedObject var drivingData: DrivingData
     @State private var currentSpeed: Double? = nil
+    @State private var brakingWarning: String? = nil
     private let activityManager = CMMotionActivityManager()
     @State private var isDriving: Bool = false  // Flag to track if the user is driving
 
@@ -33,16 +33,14 @@ struct Braking: View {
                     .foregroundColor(Color.primary)
             }
 
-            if drivingData.isBrakingHard {
-                Text("⚠️ Sudden Braking!")
-                    .foregroundColor(.red)
+            if let warning = brakingWarning {
+                Text(warning)
+                    .foregroundColor(.orange)
                     .bold()
                     .padding(.top, 10)
             }
         }
         .padding()
-        .background(drivingData.isBrakingHard ? Color.red.opacity(0.2) : Color.clear)
-        .animation(.easeInOut(duration: 0.3), value: drivingData.isBrakingHard)
         .onAppear {
             speedMonitor.startTrackingSpeed { speed in
                 DispatchQueue.main.async {
@@ -62,5 +60,5 @@ struct Braking: View {
 }
 
 #Preview {
-    Braking(drivingData: DrivingData())
+    Braking()
 }
