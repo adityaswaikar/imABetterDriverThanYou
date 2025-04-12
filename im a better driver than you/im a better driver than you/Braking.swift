@@ -17,16 +17,20 @@ struct Braking: View {
 
     
     var body: some View {
-        ZStack {
-            (accelerationCheck.isBrakingHard ? Text(String(accelerationCheck.isBrakingHard)
-                                                   ).foregroundColor(.red) : Text("THIS IS NOT BRAKING HARD RN"))
-                .edgesIgnoringSafeArea(.all)
             
             VStack {
-                Text(isDriving ? "You're Driving!" : "Not Driving")
+                let count = 0
+                if accelerationCheck.isBrakingHard {
+                    count = count + 1
+                }
+                
+                print(count)
+                
+                (Text(isDriving ? "You're Driving!" : "Not Driving")
                     .font(.largeTitle)
                     .foregroundColor(.primary)
-                    .multilineTextAlignment(.center)
+                    .multilineTextAlignment(.center))
+                
                 
                 if let speed = currentSpeed {
                     Text(String(format: "%.1f", speed))
@@ -45,7 +49,6 @@ struct Braking: View {
                 }
             }
             .padding()
-        }
         .onAppear {
             speedMonitor.startTrackingSpeed { speed in
                 DispatchQueue.main.async {
