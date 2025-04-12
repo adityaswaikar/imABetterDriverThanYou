@@ -7,7 +7,6 @@
 
 import SwiftUI
 import CoreMotion
-import CoreLocation
 
 struct Braking: View {
     @State private var currentSpeed: Double? = nil
@@ -20,7 +19,7 @@ struct Braking: View {
         VStack {
             Text(isDriving ? "You're Driving!" : "Not Driving")
                 .font(.largeTitle)
-                .foregroundColor(Color.primary)
+                .foregroundColor(.primary)
                 .multilineTextAlignment(.center)
             
             if let speed = currentSpeed {
