@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9C5B0F2F2DAAFEBD00A98F15 /* MapboxCoreNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 9C5B0F2E2DAAFEBD00A98F15 /* MapboxCoreNavigation */; };
+		9C5B0F312DAAFEBD00A98F15 /* MapboxNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 9C5B0F302DAAFEBD00A98F15 /* MapboxNavigation */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		0CB96D9A2DA9F7E000B7379F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +57,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C5B0F2F2DAAFEBD00A98F15 /* MapboxCoreNavigation in Frameworks */,
+				9C5B0F312DAAFEBD00A98F15 /* MapboxNavigation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +85,7 @@
 				0CB96D8B2DA9F7DE00B7379F /* im a better driver than you */,
 				0CB96D9C2DA9F7E000B7379F /* im a better driver than youTests */,
 				0CB96DA62DA9F7E000B7379F /* im a better driver than youUITests */,
+				9C5B0F2D2DAAFEBD00A98F15 /* Frameworks */,
 				0CB96D8A2DA9F7DE00B7379F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +98,13 @@
 				0CB96DA32DA9F7E000B7379F /* im a better driver than youUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9C5B0F2D2DAAFEBD00A98F15 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +127,8 @@
 			);
 			name = "im a better driver than you";
 			packageProductDependencies = (
+				9C5B0F2E2DAAFEBD00A98F15 /* MapboxCoreNavigation */,
+				9C5B0F302DAAFEBD00A98F15 /* MapboxNavigation */,
 			);
 			productName = "im a better driver than you";
 			productReference = 0CB96D892DA9F7DE00B7379F /* im a better driver than you.app */;
@@ -195,6 +212,9 @@
 			);
 			mainGroup = 0CB96D802DA9F7DD00B7379F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9C5B0F2C2DAAFEB500A98F15 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0CB96D8A2DA9F7DE00B7379F /* Products */;
 			projectDirPath = "";
@@ -396,9 +416,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"im a better driver than you/Preview Content\"";
-				DEVELOPMENT_TEAM = ZVXRHGT924;
+				DEVELOPMENT_TEAM = NH5RN7KK2R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "im-a-better-driver-than-you-Info.plist";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "\"We need your location to determine your speed and your drive safely\"";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "\"We need your location to determine your speed and track your drive safely.\"";
 				INFOPLIST_KEY_NSMotionUsageDescription = "We use motion data to detect when you're driving.";
@@ -412,7 +433,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "gadi.im-a-better-driver-than-you1233255";
+				PRODUCT_BUNDLE_IDENTIFIER = "gadi.im-a-better-driver-than-you1234";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -428,9 +449,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"im a better driver than you/Preview Content\"";
-				DEVELOPMENT_TEAM = ZVXRHGT924;
+				DEVELOPMENT_TEAM = NH5RN7KK2R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "im-a-better-driver-than-you-Info.plist";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "\"We need your location to determine your speed and your drive safely\"";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "\"We need your location to determine your speed and track your drive safely.\"";
 				INFOPLIST_KEY_NSMotionUsageDescription = "We use motion data to detect when you're driving.";
@@ -444,7 +466,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "gadi.im-a-better-driver-than-you1233255";
+				PRODUCT_BUNDLE_IDENTIFIER = "gadi.im-a-better-driver-than-you1234";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -564,6 +586,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9C5B0F2C2DAAFEB500A98F15 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mapbox/mapbox-navigation-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9C5B0F2E2DAAFEBD00A98F15 /* MapboxCoreNavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9C5B0F2C2DAAFEB500A98F15 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */;
+			productName = MapboxCoreNavigation;
+		};
+		9C5B0F302DAAFEBD00A98F15 /* MapboxNavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9C5B0F2C2DAAFEB500A98F15 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */;
+			productName = MapboxNavigation;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0CB96D812DA9F7DD00B7379F /* Project object */;
 }

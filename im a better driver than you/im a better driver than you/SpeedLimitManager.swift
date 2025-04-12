@@ -43,7 +43,8 @@ class SpeedLimitManager: NSObject, ObservableObject {
         routeOptions.profileIdentifier = .automobileAvoidingTraffic
         
         // Using Mapbox Directions to get road information including speed limit
-        directions.calculateRoutes(options: routeOptions) { [weak self] (session, result) in
+        //calculateRoutes(options: routeOptions)
+        directions.calculateRoutes(options: routeOptions, completionHandler: { [weak self] (session, result) in
             guard let self = self else { return }
             
             switch result {
@@ -73,7 +74,7 @@ class SpeedLimitManager: NSObject, ObservableObject {
             }
         }
         // No need to call resume() as the request auto-starts in newer versions
-    }
+    )}
     
     // Alternative approach using Mapbox Navigation's RouteController
     func startMonitoringSpeedLimits() {

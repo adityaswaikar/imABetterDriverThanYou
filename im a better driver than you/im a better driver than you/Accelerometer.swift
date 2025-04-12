@@ -9,7 +9,7 @@ import Foundation
 import CoreLocation
 // Threshold value in m/s² used to determine what qualifies as a sudden deceleration
 
-let decelerationThreshold: Double = 1 // Was 0.70
+let decelerationThreshold: Double = 4 // Was 0.70
 var isBrakingHard: Bool = false
 
 // SpeedMonitor uses CoreLocation to monitor device speed and detect sudden deceleration events like hard braking
@@ -20,18 +20,22 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
     public var speedCallback: ((Double) -> Void)?
     // Stores the last known speed for comparison
     public var previousSpeed: CLLocationSpeed?
+    // Stores the last known location
+    public var lastLocation: CLLocation?
     private var resetBrakingWorkItem: DispatchWorkItem?
     
     // Reference to the Score
     // private let scoreManager = ScoreManager()
     var scoreManager = ScoreManager.shared
+    
+    var metersTraveled = 1.0;
 
     override init() {
         // self.scoreManager = scoreManager
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.distanceFilter = 1 // Update for every ~1 meter moved
+        locationManager.distanceFilter = metersTraveled // Update for every ~1 meter moved
     }
 
     public func startTrackingSpeed(callback: @escaping (Double) -> Void) {
@@ -55,6 +59,8 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         guard let latestLocation = locations.last else { return }
+        // Store the latest location
+        self.lastLocation = latestLocation
         // Get the current speed from the most recent location update
         let currentSpeed = latestLocation.speed  // in m/s
 
@@ -79,7 +85,7 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
             // let timeDelta = latestLocation.timestamp.timeIntervalSince1970 - (locations.dropLast().last?.timestamp.timeIntervalSince1970 ?? latestLocation.timestamp.timeIntervalSince1970)
 
             // Calculate the rate of change in speed (acceleration/deceleration)
-            let rateOfChange = delta / (1 / delta)
+            let rateOfChange = delta / (metersTraveled / delta)
             
             print("This is the current acceleration (Rate of Change): \(rateOfChange)")
 

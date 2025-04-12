@@ -41,7 +41,7 @@ struct Braking: View {
                 
                 
                 if let speed = currentSpeed {
-                    Text(String(format: "%.1f", speed))
+                    Text(String(format: "%.0f", speed))
                         .font(.system(size: 50, weight: .bold))
                         .padding(.top, 5)
                     
