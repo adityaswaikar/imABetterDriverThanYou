@@ -70,8 +70,10 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
             if rateOfChange >= decelerationThreshold {
                 isBrakingHard = true
                 print("⚠️ Sudden deceleration detected: \(rateOfChange) m/s²")
-            } else {
-                isBrakingHard = false
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                    self?.isBrakingHard = false
+                }
             }
         }
 
