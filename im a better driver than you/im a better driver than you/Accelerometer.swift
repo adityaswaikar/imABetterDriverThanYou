@@ -9,7 +9,7 @@ import Foundation
 import CoreLocation
 // Threshold value in m/s² used to determine what qualifies as a sudden deceleration
 
-let decelerationThreshold: Double = 5.0
+let decelerationThreshold: Double = 1 // Was 0.70
 var isBrakingHard: Bool = false
 
 // SpeedMonitor uses CoreLocation to monitor device speed and detect sudden deceleration events like hard braking
@@ -21,12 +21,17 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
     // Stores the last known speed for comparison
     public var previousSpeed: CLLocationSpeed?
     private var resetBrakingWorkItem: DispatchWorkItem?
+    
+    // Reference to the Score
+    // private let scoreManager = ScoreManager()
+    var scoreManager = ScoreManager.shared
 
     override init() {
+        // self.scoreManager = scoreManager
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.distanceFilter = 5.0 // Update for every ~1 meter moved
+        locationManager.distanceFilter = 1 // Update for every ~1 meter moved
     }
 
     public func startTrackingSpeed(callback: @escaping (Double) -> Void) {
@@ -42,6 +47,10 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
         // Stop receiving location updates
         locationManager.stopUpdatingLocation()
     }
+    
+    
+    private var lastBrakeTime: Date? // This is for the cooldown for the brake score deduction
+    var previousTime: Date?
 
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
@@ -49,18 +58,48 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
         // Get the current speed from the most recent location update
         let currentSpeed = latestLocation.speed  // in m/s
 
+        
+        // Calculation for timeDelta
+        // let currentTime = Date()
+
+        let everySecond = Date().addingTimeInterval(1)
+        print(everySecond)
+
+
         if let lastSpeed = previousSpeed, currentSpeed >= 0 {
             // If we have a previous speed, calculate the rate of deceleration
             let delta = lastSpeed - currentSpeed
             // Calculate time difference between the current and previous speed measurement
-            let timeDelta = latestLocation.timestamp.timeIntervalSince1970 - (locations.dropLast().last?.timestamp.timeIntervalSince1970 ?? latestLocation.timestamp.timeIntervalSince1970)
+
+//            let timeDelta = latestLocation.timestamp.timeIntervalSince1970 - (locations.dropLast().last?.timestamp.timeIntervalSince1970 ?? latestLocation.timestamp.timeIntervalSince1970)
+            
+            // let timeDelta = currentTime.timeIntervalSince(lastTime)
+            
+
+            // let timeDelta = latestLocation.timestamp.timeIntervalSince1970 - (locations.dropLast().last?.timestamp.timeIntervalSince1970 ?? latestLocation.timestamp.timeIntervalSince1970)
+
             // Calculate the rate of change in speed (acceleration/deceleration)
+<<<<<<< HEAD
             let rateOfChange = delta / max(timeDelta, 0.01)
+=======
+            let rateOfChange = delta / (1 / delta)
+            
+            print("This is the current acceleration (Rate of Change): \(rateOfChange)")
+>>>>>>> AaryanBranch
 
             // If the deceleration exceeds the threshold, log a warning
             if rateOfChange >= decelerationThreshold {
-                isBrakingHard = true
+                let now = Date()
+                
+                // isBrakingHard = true
                 print("⚠️ Sudden deceleration detected: \(rateOfChange) m/s²")
+                
+                if lastBrakeTime == nil || now.timeIntervalSince(lastBrakeTime!) > 10 {
+                    isBrakingHard = true
+                    lastBrakeTime = now
+                    scoreManager.addScore(points: -5)
+                }
+                
             } else {
                 isBrakingHard = false
             }
@@ -82,3 +121,4 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
 
 // Singleton instance of SpeedMonitor for use throughout the app
 public let speedMonitor = SpeedMonitor()
+

@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct ScoringView: View {
-    @StateObject var scoreManager = ScoreManager()
+    @ObservedObject var scoreManager = ScoreManager.shared
+    
+    // @StateObject var scoreManager = ScoreManager()
     var body: some View {
         Text("Score: \(scoreManager.currentScore)")
             .font(.system(size: 40, weight: .bold))
