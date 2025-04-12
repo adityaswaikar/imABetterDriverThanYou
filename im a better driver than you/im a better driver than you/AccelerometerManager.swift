@@ -91,7 +91,6 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
                 // isBrakingHard = true
                 print("⚠️ Sudden deceleration detected: \(rateOfChange) m/s²")
                 currentScore -= 5
-                print(currentScore)
                 
                 if lastBrakeTime == nil || now.timeIntervalSince(lastBrakeTime!) > 10 {
                     isBrakingHard = true
