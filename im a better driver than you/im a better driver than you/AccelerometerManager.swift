@@ -9,8 +9,9 @@ import Foundation
 import CoreLocation
 // Threshold value in m/s² used to determine what qualifies as a sudden deceleration
 
-let decelerationThreshold: Double = 1 // Was 0.70
+let decelerationThreshold: Double = 4 // Was 0.70
 var isBrakingHard: Bool = false
+var currentScore: Int = 0
 
 // SpeedMonitor uses CoreLocation to monitor device speed and detect sudden deceleration events like hard braking
 public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject {
@@ -89,11 +90,12 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
                 
                 // isBrakingHard = true
                 print("⚠️ Sudden deceleration detected: \(rateOfChange) m/s²")
+                currentScore -= 5
+                print(currentScore)
                 
                 if lastBrakeTime == nil || now.timeIntervalSince(lastBrakeTime!) > 10 {
                     isBrakingHard = true
                     lastBrakeTime = now
-                    scoreManager.addScore(points: -5)
                 }
                 
             } else {

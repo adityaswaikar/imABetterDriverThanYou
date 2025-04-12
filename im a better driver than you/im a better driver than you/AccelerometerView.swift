@@ -16,11 +16,9 @@ struct Braking: View {
     @State private var isDriving: Bool = false  // Flag to track if the user is driving
     @State private var count = 0
     @State private var speedLimit: String = "Unknown"
-    @ObservedObject private var speedLimitObserver = speedLimitManager
+    // @ObservedObject private var speedLimitObserver = speedLimitManager
     
     // Display score in the home tab
-    @ObservedObject var scoreManager = ScoreManager.shared
-    
     var body: some View {
         ZStack {
             if isBrakingHard && (currentSpeed ?? 0 ) > 0.0 {
@@ -30,7 +28,7 @@ struct Braking: View {
             }
             
             VStack {
-                Text("Score: \(scoreManager.currentScore)")
+                Text("Current Score: \(currentScore)")
                     .font(.system(size: 40, weight: .bold))
                     .padding()
                 
@@ -50,22 +48,22 @@ struct Braking: View {
                         .font(.title2)
                         .foregroundColor(Color.primary)
                         
-                    Divider()
-                        .padding(.vertical, 10)
+//                    Divider()
+//                        .padding(.vertical, 10)
                     
-                    HStack {
-                        Image(systemName: "speedometer")
-                            .font(.system(size: 24))
-                        
-                        Text("Speed Limit: \(speedLimitObserver.speedLimitString)")
-                            .font(.title3)
-                            .bold()
-                    }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color(UIColor.secondarySystemBackground))
-                    )
+//                    HStack {
+//                        Image(systemName: "speedometer")
+//                            .font(.system(size: 24))
+//                        
+//                        Text("Speed Limit: \(speedLimitObserver.speedLimitString)")
+//                            .font(.title3)
+//                            .bold()
+//                    }
+//                    .padding()
+//                    .background(
+//                        RoundedRectangle(cornerRadius: 10)
+//                            .fill(Color(UIColor.secondarySystemBackground))
+//                    )
                 }
                 
             }
@@ -80,9 +78,9 @@ struct Braking: View {
                         isDriving = (currentSpeed ?? 0) > 1.0  // You can adjust this threshold
                         
                         // Update speed limit when location changes significantly
-                        if isDriving, let location = speedMonitor.lastLocation {
-                            speedLimitManager.getCurrentSpeedLimit(for: location)
-                        }
+//                        if isDriving, let location = speedMonitor.lastLocation {
+//                            speedLimitManager.getCurrentSpeedLimit(for: location)
+//                        }
                     }
                 }
             }

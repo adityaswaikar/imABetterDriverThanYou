@@ -12,7 +12,7 @@ struct ScoringView: View {
     
     // @StateObject var scoreManager = ScoreManager()
     var body: some View {
-        Text("Score: \(scoreManager.currentScore)")
+        Text("All Time: \(scoreManager.allTimeScore)")
             .font(.system(size: 40, weight: .bold))
             .padding()
         
