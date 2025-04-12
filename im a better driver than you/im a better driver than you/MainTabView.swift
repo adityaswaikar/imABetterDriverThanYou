@@ -22,16 +22,39 @@ struct YourScoreScreen: View {
 
 
 struct MainTabView: View {
+    @State private var isMonitoringActive = false
+    
     var body: some View {
         TabView {
             // Tab 1: Home (Braking Screen)
             NavigationStack {
-                Braking()
+                Toggle(isOn: $isMonitoringActive) {
+                        HStack {
+                            Image(systemName: "car.fill")
+                            Text("Driving Mode")
+                                .font(.headline)
+                        }
+                    }
+                    .toggleStyle(SwitchToggleStyle(tint: .blue))
+                    .padding()
+                if(isMonitoringActive) {
+                    Text("This is working")
+                    Braking()
+                } else {
+                    VStack {
+                        Image(systemName: "car.2.fill")
+                            .font(.system(size: 60))
+                            .foregroundColor(.gray)
+                        Text("Driving mode is off")
+                            .foregroundColor(.secondary)
+                        }
+                    .padding(.top, 40)
+                }
             }
             .tabItem {
                 Label("Home", systemImage: "car.fill")
             }
-
+            
             // Tab 2: Scoring
             NavigationStack {
                 ScoringView()
@@ -42,6 +65,7 @@ struct MainTabView: View {
         }
     }
 }
+
 
 #Preview {
     MainTabView()

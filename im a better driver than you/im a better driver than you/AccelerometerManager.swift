@@ -15,6 +15,7 @@ var currentScore: Int = 0
 
 // SpeedMonitor uses CoreLocation to monitor device speed and detect sudden deceleration events like hard braking
 public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject {
+    
     // CLLocationManager instance used to get location and speed updates
     private let locationManager = CLLocationManager()
     // Optional callback to pass current speed to external handlers (not used for braking detection directly)
@@ -54,7 +55,6 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
     var previousTime: Date?
 
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
         guard let latestLocation = locations.last else { return }
         // Get the current speed from the most recent location update
         let currentSpeed = latestLocation.speed  // in m/s
@@ -92,7 +92,7 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
                 print("⚠️ Sudden deceleration detected: \(rateOfChange) m/s²")
                 currentScore -= 5
                 
-                if lastBrakeTime == nil || now.timeIntervalSince(lastBrakeTime!) > 10 {
+                if lastBrakeTime == nil || now.timeIntervalSince(lastBrakeTime!) > 5 {
                     isBrakingHard = true
                     lastBrakeTime = now
                 }
