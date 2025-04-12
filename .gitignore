@@ -1,2 +1,5 @@
 *.plist
 *.xcuserstate
+*.xcuserstate
+*.resolved
+*.plist
