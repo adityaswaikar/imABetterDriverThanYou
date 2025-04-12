@@ -19,11 +19,9 @@ struct Braking: View {
     var body: some View {
             
             VStack {
-                
-                if accelerationCheck.isBrakingHard && count == 0 {
-                    Text("Brake Count: \(count += 1)")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
+                let count = 0
+                if accelerationCheck.isBrakingHard {
+                    count = count + 1
                 }
                 
                 (Text(isDriving ? "You're Driving!" : "Not Driving")
