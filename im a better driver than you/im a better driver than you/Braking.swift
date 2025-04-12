@@ -29,8 +29,8 @@ struct Braking: View {
             // Display speed if available
             if let speed = currentSpeed {
                 // Convert speed from meters per second to miles per hour
-                let mphSpeed = speed * 2.23694
-                Text("\(Int(mphSpeed.rounded()))") // Display the rounded speed
+                //let mphSpeed = speed * 2.23694
+                Text("\(Int(speed.rounded()))") // Display the rounded speed
                     .font(.system(size: 50, weight: .bold)) // Make the speed large and bold
                     .padding(.top, 5) // Add space between speed and label
                 
@@ -51,7 +51,7 @@ struct Braking: View {
         
         // Start motion activity updates when the view appears
         .onAppear {
-            currentSpeed = 0 // Initialize speed to 0 when the view appears
+            currentSpeed = 0
             speedMonitor.startTrackingSpeed { speed in
                 currentSpeed = speed // Update current speed as it changes
             }
