@@ -7,83 +7,119 @@
 
 import Foundation
 import CoreLocation
-import MapboxDirections
-import MapboxCoreNavigation
-import MapboxNavigation
+
+// Structure to parse Mapbox speed limit data
+struct MapboxSpeedLimit {
+    let speed: Double
+    let unit: String
+    
+    // Convert to miles per hour for display
+    var speedInMPH: Double {
+        if unit.lowercased() == "km/h" {
+            
+            let mphValue = speed * 0.621371 // Convert km/h to mph
+            return round(mphValue / 5) * 5 // Round to nearest 5 mph
+
+        } else {
+            return speed // Already in mph
+        }
+    }
+    
+    var formattedString: String {
+        return "\(Int(speedInMPH)) mph"
+    }
+}
 
 class SpeedLimitManager: NSObject, ObservableObject {
-    @Published var currentSpeedLimit: Measurement<UnitSpeed>?
+    @Published var currentSpeedLimit: MapboxSpeedLimit?
     @Published var speedLimitString: String = "Unknown"
     
-    private let directions = Directions.shared
-    private let speedLimitFormatter = MeasurementFormatter()
+    // Mapbox access token from Info.plist
+    private var accessToken: String {
+        guard let path = Bundle.main.path(forResource: "im-a-better-driver-than-you-Info", ofType: "plist"),
+              let dict = NSDictionary(contentsOfFile: path) as? [String: Any],
+              let token = dict["MBXAccessToken"] as? String else {
+            return "pk.eyJ1Ijoic3VtZWRoa2FuZSIsImEiOiJjbTllZzI4NzkxYXk5Mm5vZHQ0N3NlYmc3In0.29JutwNTWzi_QxQQV8nsNA" // Use a default or fallback token
+        }
+        return token
+    }
     
     override init() {
         super.init()
-        
-        // Configure the measurement formatter for speed limits
-        speedLimitFormatter.unitOptions = .providedUnit
-        speedLimitFormatter.numberFormatter.maximumFractionDigits = 0
+        print("SpeedLimitManager initialized with token: \(accessToken)")
     }
     
     func getCurrentSpeedLimit(for location: CLLocation) {
-        // Create route options with the current location and a destination point
-        // We need at least two coordinates for the Directions API to return a valid route
-        
-        // Create a second coordinate point a short distance from the current location
-        // This could be improved by using a meaningful destination if available
+        // Create a destination point a short distance from the current location
         let currentCoordinate = location.coordinate
         let destinationCoordinate = CLLocationCoordinate2D(
             latitude: currentCoordinate.latitude + 0.001, 
             longitude: currentCoordinate.longitude + 0.001
         )
         
-        let routeOptions = RouteOptions(coordinates: [currentCoordinate, destinationCoordinate])
-        // Set profile to driving to get road-related information including speed limits
-        routeOptions.profileIdentifier = .automobileAvoidingTraffic
+        // Format URL for Mapbox Directions API request
+        let urlString = "https://api.mapbox.com/directions/v5/mapbox/driving/\(currentCoordinate.longitude),\(currentCoordinate.latitude);\(destinationCoordinate.longitude),\(destinationCoordinate.latitude)?annotations=maxspeed&overview=full&access_token=\(accessToken)"
         
-        // Using Mapbox Directions to get road information including speed limit
-        //calculateRoutes(options: routeOptions)
-        directions.calculateRoutes(options: routeOptions, completionHandler: { [weak self] (session, result) in
+        guard let url = URL(string: urlString) else {
+            print("Error: Invalid URL")
+            return
+        }
+        
+        // Create and start the network request
+        let task = URLSession.shared.dataTask(with: url) { [weak self] (data, response, error) in
             guard let self = self else { return }
             
-            switch result {
-            case .failure(let error):
-                print("Error getting speed limit: \(error.localizedDescription)")
-                self.speedLimitString = "Unknown"
-                
-            case .success(let response):
-                // Extract speed limit information from the response if available
-                if let route = response.routes?.first,
-                   let firstLeg = route.legs.first,
-                   let speedLimit = firstLeg.segmentMaximumSpeedLimits?.first {
+            if let error = error {
+                print("Error fetching speed limit: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.speedLimitString = "Unknown"
+                }
+                return
+            }
+            
+            guard let data = data else {
+                print("Error: No data received")
+                DispatchQueue.main.async {
+                    self.speedLimitString = "Unknown"
+                }
+                return
+            }
+            
+            // Parse the JSON response
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let routes = json["routes"] as? [[String: Any]],
+                   let firstRoute = routes.first,
+                   let legs = firstRoute["legs"] as? [[String: Any]],
+                   let firstLeg = legs.first,
+                   let annotation = firstLeg["annotation"] as? [String: Any],
+                   let maxspeeds = annotation["maxspeed"] as? [[String: Any]],
+                   let firstMaxspeed = maxspeeds.first,
+                   let speed = firstMaxspeed["speed"] as? Double,
+                   let unit = firstMaxspeed["unit"] as? String {
                     
-                    self.currentSpeedLimit = speedLimit
+                    let speedLimit = MapboxSpeedLimit(speed: speed, unit: unit)
                     
-                    // Format the speed limit for display
-                    if let speedLimit = self.currentSpeedLimit {
-                        self.speedLimitFormatter.unitStyle = .short
-                        self.speedLimitString = self.speedLimitFormatter.string(from: speedLimit)
-                    } else {
-                        self.speedLimitString = "Unknown"
+                    DispatchQueue.main.async {
+                        self.currentSpeedLimit = speedLimit
+                        self.speedLimitString = speedLimit.formattedString
+                        print("Speed limit found: \(speedLimit.formattedString)")
                     }
                 } else {
-                    print("No speed limit information available in the response")
+                    print("Error: Could not parse speed limit from response")
+                    DispatchQueue.main.async {
+                        self.speedLimitString = "Unknown"
+                    }
+                }
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+                DispatchQueue.main.async {
                     self.speedLimitString = "Unknown"
                 }
             }
         }
-        // No need to call resume() as the request auto-starts in newer versions
-    )}
-    
-    // Alternative approach using Mapbox Navigation's RouteController
-    func startMonitoringSpeedLimits() {
-        // This method would use NavigationViewController or RouteController 
-        // to continuously monitor speed limits along a route
         
-        // Note: This is a more advanced implementation that would require 
-        // setting up a route and navigation session, which is beyond the
-        // scope of this implementation
+        task.resume()
     }
 }
 
