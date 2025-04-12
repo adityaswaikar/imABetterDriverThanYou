@@ -9,17 +9,17 @@ import Foundation
 
 class ScoreManager: ObservableObject {
     static let shared = ScoreManager()
-    @Published var currentScore: Int = 0 {
+    @Published var allTimeScore: Int = 0 {
            didSet {
-               UserDefaults.standard.set(currentScore, forKey: "savedScore")
+               UserDefaults.standard.set(allTimeScore, forKey: "savedScore")
            }
        }
     
      init() {
-            self.currentScore = UserDefaults.standard.integer(forKey: "savedScore")
+            self.allTimeScore = UserDefaults.standard.integer(forKey: "savedScore")
         }
     
     func addScore(points : Int){
-        currentScore += points
+        allTimeScore += points
     }
 }

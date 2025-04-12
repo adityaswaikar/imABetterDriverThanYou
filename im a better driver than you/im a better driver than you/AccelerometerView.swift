@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreMotion
+import CoreLocation
 
 struct Braking: View {
     @State private var currentSpeed: Double? = nil
@@ -14,10 +15,10 @@ struct Braking: View {
     private let activityManager = CMMotionActivityManager()
     @State private var isDriving: Bool = false  // Flag to track if the user is driving
     @State private var count = 0
+    @State private var speedLimit: String = "Unknown"
+    // @ObservedObject private var speedLimitObserver = speedLimitManager
     
     // Display score in the home tab
-    @ObservedObject var scoreManager = ScoreManager.shared
-    
     var body: some View {
         ZStack {
             if isBrakingHard && (currentSpeed ?? 0 ) > 0.0 {
@@ -27,7 +28,7 @@ struct Braking: View {
             }
             
             VStack {
-                Text("Score: \(scoreManager.currentScore)")
+                Text("Current Score: \(currentScore)")
                     .font(.system(size: 40, weight: .bold))
                     .padding()
                 
@@ -38,7 +39,7 @@ struct Braking: View {
                 
                 
                 if let speed = currentSpeed {
-                    Text(String(format: "%.1f", speed))
+                    Text(String(format: "%.0f", speed))
                         .font(.system(size: 50, weight: .bold))
                         .padding(.top, 5)
                     
@@ -46,11 +47,29 @@ struct Braking: View {
                     Text("Speed (MPH)")
                         .font(.title2)
                         .foregroundColor(Color.primary)
+                        
+//                    Divider()
+//                        .padding(.vertical, 10)
+                    
+//                    HStack {
+//                        Image(systemName: "speedometer")
+//                            .font(.system(size: 24))
+//                        
+//                        Text("Speed Limit: \(speedLimitObserver.speedLimitString)")
+//                            .font(.title3)
+//                            .bold()
+//                    }
+//                    .padding()
+//                    .background(
+//                        RoundedRectangle(cornerRadius: 10)
+//                            .fill(Color(UIColor.secondarySystemBackground))
+//                    )
                 }
                 
             }
         }
             .padding()
+
             .onAppear {
                 speedMonitor.startTrackingSpeed { speed in
                     DispatchQueue.main.async {
