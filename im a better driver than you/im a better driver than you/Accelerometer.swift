@@ -30,6 +30,7 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
     public var speedCallback: ((Double) -> Void)?
     // Stores the last known speed for comparison
     public var previousSpeed: CLLocationSpeed?
+    private var resetBrakingWorkItem: DispatchWorkItem?
 
     override init() {
         super.init()
@@ -71,9 +72,15 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
                 isBrakingHard = true
                 print("⚠️ Sudden deceleration detected: \(rateOfChange) m/s²")
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                // Cancel previous reset task if any
+                resetBrakingWorkItem?.cancel()
+
+                // Schedule a new reset task
+                let workItem = DispatchWorkItem { [weak self] in
                     self?.isBrakingHard = false
                 }
+                resetBrakingWorkItem = workItem
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: workItem)
             }
         }
 
