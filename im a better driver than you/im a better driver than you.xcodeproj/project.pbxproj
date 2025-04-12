@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9C82979A2DAAF1E100B274FB /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 9C8297992DAAF1E100B274FB /* .gitignore */; };
+		9C82979D2DAAF2F500B274FB /* MapboxCoreNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 9C82979C2DAAF2F500B274FB /* MapboxCoreNavigation */; };
+		9C82979F2DAAF2F500B274FB /* MapboxNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 9C82979E2DAAF2F500B274FB /* MapboxNavigation */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C82979D2DAAF2F500B274FB /* MapboxCoreNavigation in Frameworks */,
+				9C82979F2DAAF2F500B274FB /* MapboxNavigation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +88,7 @@
 				0CB96D8B2DA9F7DE00B7379F /* im a better driver than you */,
 				0CB96D9C2DA9F7E000B7379F /* im a better driver than youTests */,
 				0CB96DA62DA9F7E000B7379F /* im a better driver than youUITests */,
+				9C82979B2DAAF2F500B274FB /* Frameworks */,
 				0CB96D8A2DA9F7DE00B7379F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -96,6 +101,13 @@
 				0CB96DA32DA9F7E000B7379F /* im a better driver than youUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9C82979B2DAAF2F500B274FB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -118,6 +130,8 @@
 			);
 			name = "im a better driver than you";
 			packageProductDependencies = (
+				9C82979C2DAAF2F500B274FB /* MapboxCoreNavigation */,
+				9C82979E2DAAF2F500B274FB /* MapboxNavigation */,
 			);
 			productName = "im a better driver than you";
 			productReference = 0CB96D892DA9F7DE00B7379F /* im a better driver than you.app */;
@@ -587,6 +601,19 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9C82979C2DAAF2F500B274FB /* MapboxCoreNavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9C8297942DAAEFA000B274FB /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */;
+			productName = MapboxCoreNavigation;
+		};
+		9C82979E2DAAF2F500B274FB /* MapboxNavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9C8297942DAAEFA000B274FB /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */;
+			productName = MapboxNavigation;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0CB96D812DA9F7DD00B7379F /* Project object */;
 }

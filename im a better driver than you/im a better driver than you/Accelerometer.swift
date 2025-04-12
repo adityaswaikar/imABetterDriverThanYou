@@ -20,6 +20,8 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
     public var speedCallback: ((Double) -> Void)?
     // Stores the last known speed for comparison
     public var previousSpeed: CLLocationSpeed?
+    // Stores the most recent location for use with speed limit lookup
+    public var lastLocation: CLLocation?
     private var resetBrakingWorkItem: DispatchWorkItem?
 
     override init() {
@@ -46,6 +48,9 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         guard let latestLocation = locations.last else { return }
+        // Store the latest location for speed limit lookup
+        lastLocation = latestLocation
+        
         // Get the current speed from the most recent location update
         let currentSpeed = latestLocation.speed  // in m/s
 
