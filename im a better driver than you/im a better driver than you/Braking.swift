@@ -13,17 +13,17 @@ struct Braking: View {
     @State private var brakingWarning: String? = nil
     private let activityManager = CMMotionActivityManager()
     @State private var isDriving: Bool = false  // Flag to track if the user is driving
-    @StateObject var accelerationCheck = SpeedMonitor()
     @State private var count = 0
     
     var body: some View {
+        ZStack {
+            if isBrakingHard && (currentSpeed ?? 0 ) > 0.0 {
+                Color.red
+            } else {
+                Color.clear
+            }
             
             VStack {
-                if accelerationCheck.isBrakingHard {
-                    Text("Brake Count: \(count += 1)")
-                                    .font(.headline)
-                                    .foregroundColor(.secondary)
-                }
                 
                 (Text(isDriving ? "You're Driving!" : "Not Driving")
                     .font(.largeTitle)
@@ -41,12 +41,9 @@ struct Braking: View {
                         .font(.title2)
                         .foregroundColor(Color.primary)
                 }
-
-                if accelerationCheck.isBrakingHard {
-                    Text("breaking hard !!!")
-                        .foregroundColor(.black)
-                }
+                
             }
+        }
             .padding()
         .onAppear {
             speedMonitor.startTrackingSpeed { speed in

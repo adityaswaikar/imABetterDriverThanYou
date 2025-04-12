@@ -10,11 +10,10 @@ import CoreLocation
 // Threshold value in m/s² used to determine what qualifies as a sudden deceleration
 
 let decelerationThreshold: Double = 0.7
-
+var isBrakingHard: Bool = false
 
 // SpeedMonitor uses CoreLocation to monitor device speed and detect sudden deceleration events like hard braking
 public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject {
-    @Published var isBrakingHard: Bool = false
     // CLLocationManager instance used to get location and speed updates
     private let locationManager = CLLocationManager()
     // Optional callback to pass current speed to external handlers (not used for braking detection directly)
@@ -62,16 +61,8 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
             if rateOfChange >= decelerationThreshold {
                 isBrakingHard = true
                 print("⚠️ Sudden deceleration detected: \(rateOfChange) m/s²")
-                
-                // Cancel previous reset task if any
-                resetBrakingWorkItem?.cancel()
-
-                // Schedule a new reset task
-                let workItem = DispatchWorkItem { [weak self] in
-                    self?.isBrakingHard = false
-                }
-                resetBrakingWorkItem = workItem
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: workItem)
+            } else {
+                isBrakingHard = false
             }
         }
 
