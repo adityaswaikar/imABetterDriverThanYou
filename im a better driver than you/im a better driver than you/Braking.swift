@@ -17,32 +17,35 @@ struct Braking: View {
 
     
     var body: some View {
-           
-        VStack {
-            Text(isDriving ? "You're Driving!" : "Not Driving")
-                .font(.largeTitle)
-                .foregroundColor(.primary)
-                .multilineTextAlignment(.center)
+        ZStack {
+            (accelerationCheck.isBrakingHard ? Color.red : Color.clear)
+                .animation(.easeInOut(duration: 0.5), value: accelerationCheck.isBrakingHard)
+                .edgesIgnoringSafeArea(.all)
             
-            if let speed = currentSpeed {
-                Text(String(format: "%.1f", speed))
-                    .font(.system(size: 50, weight: .bold))
-                    .padding(.top, 5)
+            VStack {
+                Text(isDriving ? "You're Driving!" : "Not Driving")
+                    .font(.largeTitle)
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.center)
                 
-                // Dynamically adjusts text color for light/dark mode
-                Text("Speed (MPH)")
-                    .font(.title2)
-                    .foregroundColor(Color.primary)
-            }
+                if let speed = currentSpeed {
+                    Text(String(format: "%.1f", speed))
+                        .font(.system(size: 50, weight: .bold))
+                        .padding(.top, 5)
+                    
+                    // Dynamically adjusts text color for light/dark mode
+                    Text("Speed (MPH)")
+                        .font(.title2)
+                        .foregroundColor(Color.primary)
+                }
 
-            if let warning = brakingWarning {
-                Text(warning)
-                    .foregroundColor(.orange)
-                    .bold()
-                    .padding(.top, 10)
+                if accelerationCheck.isBrakingHard {
+                    Text("breaking hard !!!")
+                        .foregroundColor(.red)
+                }
             }
+            .padding()
         }
-        .padding()
         .onAppear {
             speedMonitor.startTrackingSpeed { speed in
                 DispatchQueue.main.async {
