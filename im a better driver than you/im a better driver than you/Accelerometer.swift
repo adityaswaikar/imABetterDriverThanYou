@@ -24,7 +24,7 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.distanceFilter = 1 // Update for every ~1 meter moved
+        locationManager.distanceFilter = 0.5 // Update for every ~1 meter moved
     }
 
     public func startTrackingSpeed(callback: @escaping (Double) -> Void) {
@@ -63,9 +63,9 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate {
         // Update the previous speed for the next comparison
         previousSpeed = currentSpeed
         
-        if currentSpeed >= 0 {
+        /* if currentSpeed >= 0 {
             speedCallback?(currentSpeed * 2.23694) // Convert to MPH if desired
-        }
+        } */
     }
 
     public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

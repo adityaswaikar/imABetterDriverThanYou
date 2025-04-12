@@ -42,12 +42,9 @@ struct Braking: View {
         }
         .padding()
         .onAppear {
+            currentSpeed = 0
             speedMonitor.startTrackingSpeed { speed in
-                DispatchQueue.main.async {
-                    withAnimation(.easeInOut(duration: 0.1)) {
                         currentSpeed = speed
-                    }
-                }
             }
             
             if CMMotionActivityManager.isActivityAvailable() {
