@@ -79,13 +79,9 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
             // let timeDelta = latestLocation.timestamp.timeIntervalSince1970 - (locations.dropLast().last?.timestamp.timeIntervalSince1970 ?? latestLocation.timestamp.timeIntervalSince1970)
 
             // Calculate the rate of change in speed (acceleration/deceleration)
-<<<<<<< HEAD
-            let rateOfChange = delta / max(timeDelta, 0.01)
-=======
             let rateOfChange = delta / (1 / delta)
             
             print("This is the current acceleration (Rate of Change): \(rateOfChange)")
->>>>>>> AaryanBranch
 
             // If the deceleration exceeds the threshold, log a warning
             if rateOfChange >= decelerationThreshold {
