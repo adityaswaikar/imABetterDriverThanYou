@@ -19,7 +19,6 @@ struct Braking: View {
     var body: some View {
         ZStack {
             (accelerationCheck.isBrakingHard ? Color.red : Color.clear)
-                .animation(.easeInOut(duration: 0.5), value: accelerationCheck.isBrakingHard)
                 .edgesIgnoringSafeArea(.all)
             
             VStack {
@@ -41,7 +40,7 @@ struct Braking: View {
 
                 if accelerationCheck.isBrakingHard {
                     Text("breaking hard !!!")
-                        .foregroundColor(.red)
+                        .foregroundColor(.black)
                 }
             }
             .padding()
