@@ -11,7 +11,8 @@ import SwiftUI
 struct im_a_better_driver_than_youApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            // ContentView()
+            ScoringView()
         }
     }
 }
