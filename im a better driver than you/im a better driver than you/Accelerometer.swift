@@ -24,11 +24,9 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
     
     // Reference to the Score
     private let scoreManager = ScoreManager()
-    
-    public let speedMonitor = SpeedMonitor(scoreManager: ScoreManager.shared)
 
     init(scoreManager: ScoreManager) {
-        self.scoreManager = scoreManager
+        // self.scoreManager = scoreManager
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -100,5 +98,5 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
 }
 
 // Singleton instance of SpeedMonitor for use throughout the app
-public let speedMonitor = SpeedMonitor()
+public let speedMonitor = SpeedMonitor(scoreManager: ScoreManager.shared)
 
