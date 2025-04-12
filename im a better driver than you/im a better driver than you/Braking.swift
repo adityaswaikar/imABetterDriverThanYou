@@ -53,7 +53,7 @@ struct Braking: View {
             if CMMotionActivityManager.isActivityAvailable() {
                 activityManager.startActivityUpdates(to: OperationQueue.main) { activity in
                     guard let activity = activity else { return }
-                    isDriving = activity.automotive && activity.confidence != .low
+                    isDriving = activity.walking && activity.confidence != .low
                 }
             }
         }
