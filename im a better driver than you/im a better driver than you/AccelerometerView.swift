@@ -16,6 +16,7 @@ struct Braking: View {
     @State private var isDriving: Bool = false  // Flag to track if the user is driving
     @State private var count = 0
     @State private var speedLimit: String = "Unknown"
+    @Binding var isActive: Bool 
     // @ObservedObject private var speedLimitObserver = speedLimitManager
     
     // Display score in the home tab
@@ -68,21 +69,50 @@ struct Braking: View {
                 
             }
         }
+        
             .padding()
             .onAppear {
-                speedMonitor.startTrackingSpeed { speed in
-                    DispatchQueue.main.async {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            currentSpeed = speed
-                            // Determine if driving based on speed threshold
-                            isDriving = (currentSpeed ?? 0) > 1.0  // You can adjust this threshold
-                            
-                            // Update speed limit when location changes significantly
-                            //                        if isDriving, let location = speedMonitor.lastLocation {
-                            //                            speedLimitManager.getCurrentSpeedLimit(for: location)
-                            //                        }
+                if isActive {
+                    speedMonitor.startTrackingSpeed { speed in
+                        DispatchQueue.main.async {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                currentSpeed = speed
+                                // Determine if driving based on speed threshold
+                                isDriving = (currentSpeed ?? 0) > 1.0  // You can adjust this threshold
+                                
+                                // Update speed limit when location changes significantly
+                                //                        if isDriving, let location = speedMonitor.lastLocation {
+                                //                            speedLimitManager.getCurrentSpeedLimit(for: location)
+                                //                        }
+                            }
                         }
                     }
+                } else {
+                    speedMonitor.stopTrackingSpeed()
+                    activityManager.stopActivityUpdates()
+                }
+            }
+        
+            .onChange(of: isActive) { oldValue, newValue in
+                print("Braking isActive changed: \(oldValue) -> \(newValue)")
+                if isActive {
+                    speedMonitor.startTrackingSpeed { speed in
+                        DispatchQueue.main.async {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                currentSpeed = speed
+                                // Determine if driving based on speed threshold
+                                isDriving = (currentSpeed ?? 0) > 1.0  // You can adjust this threshold
+                                
+                                // Update speed limit when location changes significantly
+                                //                        if isDriving, let location = speedMonitor.lastLocation {
+                                //                            speedLimitManager.getCurrentSpeedLimit(for: location)
+                                //                        }
+                            }
+                        }
+                    }
+                } else {
+                    speedMonitor.stopTrackingSpeed()
+                    activityManager.stopActivityUpdates()
                 }
             }
         
@@ -90,9 +120,10 @@ struct Braking: View {
                 speedMonitor.stopTrackingSpeed()
                 activityManager.stopActivityUpdates()
             }
+        
         }
     }
 
-#Preview {
-    Braking()
-}
+//#Preview {
+//    Braking(isActive)
+//}

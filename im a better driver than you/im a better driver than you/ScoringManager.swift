@@ -9,7 +9,7 @@ import Foundation
 
 class ScoreManager: ObservableObject {
     static let shared = ScoreManager()
-    @Published var allTimeScore: Int = 0 {
+    @Published var allTimeScore: Int = 100 {
            didSet {
                UserDefaults.standard.set(allTimeScore, forKey: "savedScore")
            }

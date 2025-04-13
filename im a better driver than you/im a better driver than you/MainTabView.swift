@@ -23,6 +23,8 @@ struct YourScoreScreen: View {
 
 struct MainTabView: View {
     @State private var isMonitoringActive = false
+    @ObservedObject var scoreManager = ScoreManager.shared
+    
     
     var body: some View {
         TabView {
@@ -37,17 +39,25 @@ struct MainTabView: View {
                     }
                     .toggleStyle(SwitchToggleStyle(tint: .blue))
                     .padding()
+                
                 if(isMonitoringActive) {
+                    Braking(isActive: $isMonitoringActive)
                     Text("This is working")
-                    Braking()
                 } else {
                     VStack {
+                        
                         Image(systemName: "car.2.fill")
                             .font(.system(size: 60))
                             .foregroundColor(.gray)
+                        
                         Text("Driving mode is off")
                             .foregroundColor(.secondary)
                         }
+                    
+                    Text("All Time: \(scoreManager.allTimeScore)")
+                        .font(.system(size: 40, weight: .bold))
+                        .padding()
+                    
                     .padding(.top, 40)
                 }
             }

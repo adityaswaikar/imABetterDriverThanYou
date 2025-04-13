@@ -9,7 +9,7 @@ import Foundation
 import CoreLocation
 // Threshold value in m/s² used to determine what qualifies as a sudden deceleration
 
-let decelerationThreshold: Double = 4 // Was 0.70
+let decelerationThreshold: Double = 0 // Was 0.70
 var isBrakingHard: Bool = false
 var currentScore: Int = 0
 
@@ -48,6 +48,8 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
     public func stopTrackingSpeed() {
         // Stop receiving location updates
         locationManager.stopUpdatingLocation()
+        scoreManager.addScore(points: currentScore)
+        currentScore = 0
     }
     
     
@@ -62,9 +64,7 @@ public class SpeedMonitor: NSObject, CLLocationManagerDelegate, ObservableObject
         
         // Calculation for timeDelta
         // let currentTime = Date()
-
-        let everySecond = Date().addingTimeInterval(1)
-        print(everySecond)
+        print(currentScore)
 
 
         if let lastSpeed = previousSpeed, currentSpeed >= 0 {
