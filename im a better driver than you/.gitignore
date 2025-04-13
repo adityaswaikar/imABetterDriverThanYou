@@ -9,3 +9,9 @@ build/
 *.perspectivev3
 *.mode1v3
 *.mode2v3
+
+.xcuserdata/
+*.xcworkspace/
+*.xcuserstate
+xcschememanagement.plist
+*.xcuserdatad
