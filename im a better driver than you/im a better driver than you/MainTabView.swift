@@ -110,6 +110,15 @@ struct MainTabView: View {
             .tabItem {
                 Label("Score", systemImage: "chart.bar.fill")
             }
+            
+            NavigationStack {
+                HistoryView()
+                    .navigationTitle("Driving History")
+                    .navigationBarTitleDisplayMode(.inline)
+            }
+            .tabItem {
+                Label("History", systemImage: "clock.fill")
+            }
         }
         .accentColor(AppTheme.primary)
     }

@@ -155,6 +155,15 @@ struct Braking: View {
                     
                     if isDriving, let location = speedMonitor.lastLocation {
                         speedLimitManager.getCurrentSpeedLimit(for: location)
+                        
+                        // Start a session if one isn't already started
+                        if SessionManager.shared.currentSession == nil {
+                            SessionManager.shared.startSession()
+                        }
+                        
+                        // Update the current session with speed and location
+                        SessionManager.shared.updateSpeed(speed)
+                        SessionManager.shared.updateLocation(location)
                     }
                 }
             }
@@ -164,6 +173,11 @@ struct Braking: View {
     private func stopMonitoring() {
         speedMonitor.stopTrackingSpeed()
         activityManager.stopActivityUpdates()
+        
+        // End the current session
+        if SessionManager.shared.currentSession != nil {
+            SessionManager.shared.endSession()
+        }
     }
     
     private func scoreColor(for score: Int) -> Color {
