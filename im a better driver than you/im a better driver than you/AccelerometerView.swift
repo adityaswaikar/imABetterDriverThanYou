@@ -13,117 +13,178 @@ struct Braking: View {
     @State private var currentSpeed: Double? = nil
     @State private var brakingWarning: String? = nil
     private let activityManager = CMMotionActivityManager()
-    @State private var isDriving: Bool = false  // Flag to track if the user is driving
+    @State private var isDriving: Bool = false
     @State private var count = 0
     @State private var speedLimit: String = "Unknown"
-    @Binding var isActive: Bool 
+    @Binding var isActive: Bool
     @ObservedObject private var speedLimitObserver = speedLimitManager
+    @ObservedObject var scoreManager = ScoreManager.shared
     
-    // Display score in the home tab
     var body: some View {
         ZStack {
-            if isBrakingHard && (currentSpeed ?? 0 ) > 0.0 {
-                Color.red
-            } else {
-                Color.clear
+            // Background color changes when braking hard
+            if isBrakingHard && (currentSpeed ?? 0) > 0.0 {
+                Color.red.opacity(0.3)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
             }
             
-            VStack {
-                Text("Current Score: \(currentScore)")
-                    .font(.system(size: 40, weight: .bold))
-                    .padding()
+            VStack(spacing: 16) {
+                // Score Card
+                VStack(spacing: 8) {
+                    Text("Current Drive Score")
+                        .font(AppTheme.TextStyle.caption)
+                        .foregroundColor(.secondary)
+                    
+                    Text("\(currentScore)")
+                        .font(.system(size: 50, weight: .bold))
+                        .foregroundColor(scoreColor(for: currentScore))
+                }
+                .frame(maxWidth: .infinity)
+                .padding(20)
+                .background(
+                    RoundedRectangle(cornerRadius: AppTheme.CardStyle.cornerRadius)
+                        .fill(Color(UIColor.secondarySystemBackground))
+                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                )
+                .padding(.horizontal)
                 
-                (Text(isDriving ? "You're Driving!" : "Not Driving")
-                    .font(.largeTitle)
-                    .foregroundColor(.primary)
-                    .multilineTextAlignment(.center))
-                
+                // Driving Status Card
+                HStack {
+                    Image(systemName: isDriving ? "car.fill" : "car")
+                        .font(.system(size: 30))
+                        .foregroundColor(isDriving ? AppTheme.success : .secondary)
+                    
+                    Text(isDriving ? "Driving Detected" : "Not Driving")
+                        .font(AppTheme.TextStyle.title)
+                        .foregroundColor(isDriving ? AppTheme.success : .secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: AppTheme.CardStyle.cornerRadius)
+                        .fill(Color(UIColor.secondarySystemBackground))
+                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                )
+                .padding(.horizontal)
                 
                 if let speed = currentSpeed {
-                    Text(String(format: "%.0f", speed))
-                        .font(.system(size: 50, weight: .bold))
-                        .padding(.top, 5)
-                    
-                    // Dynamically adjusts text color for light/dark mode
-                    Text("Speed (MPH)")
-                        .font(.title2)
-                        .foregroundColor(Color.primary)
+                    // Speed Card
+                    VStack(spacing: 8) {
+                        // Current Speed
+                        Text(String(format: "%.0f", speed))
+                            .font(.system(size: 80, weight: .bold))
+                            .foregroundColor(speedColor(speed: speed))
                         
-                   Divider()
-                       .padding(.vertical, 10)
-                    
-                   HStack {
-                       Image(systemName: "speedometer")
-                           .font(.system(size: 24))
-                       
-                       Text("Speed Limit: \(speedLimitObserver.speedLimitString)")
-                           .font(.title3)
-                           .bold()
-                   }
-                   .padding()
-                   .background(
-                       RoundedRectangle(cornerRadius: 10)
-                           .fill(Color(UIColor.secondarySystemBackground))
-                   )
+                        Text("Speed (MPH)")
+                            .font(AppTheme.TextStyle.body)
+                            .foregroundColor(.secondary)
+                        
+                        Divider()
+                            .padding(.vertical, 10)
+                        
+                        // Speed Limit
+                        HStack {
+                            Image(systemName: "speedometer")
+                                .font(.system(size: 24))
+                                .foregroundColor(.primary)
+                            
+                            Text("Speed Limit: \(speedLimitObserver.speedLimitString)")
+                                .font(AppTheme.TextStyle.body)
+                                .bold()
+                        }
+                    }
+                    .padding(20)
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        RoundedRectangle(cornerRadius: AppTheme.CardStyle.cornerRadius)
+                            .fill(Color(UIColor.secondarySystemBackground))
+                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                    )
+                    .padding(.horizontal)
                 }
                 
+                // Hard Braking Warning
+                if isBrakingHard && (currentSpeed ?? 0) > 0.0 {
+                    HStack {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .font(.system(size: 24))
+                            .foregroundColor(.white)
+                        
+                        Text("HARD BRAKING DETECTED")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: AppTheme.CardStyle.cornerRadius)
+                            .fill(AppTheme.danger)
+                    )
+                    .padding(.horizontal)
+                    .transition(.scale.combined(with: .opacity))
+                }
+                
+                Spacer()
+            }
+            .padding(.top, 20)
+        }
+        .animation(.easeInOut(duration: 0.3), value: isBrakingHard)
+        .onAppear {
+            startMonitoring()
+        }
+        .onChange(of: isActive) { oldValue, newValue in
+            if newValue {
+                startMonitoring()
+            } else {
+                stopMonitoring()
             }
         }
-        
-            .padding()
-            .onAppear {
-                if isActive {
-                    speedMonitor.startTrackingSpeed { speed in
-                        DispatchQueue.main.async {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                currentSpeed = speed
-                                // Determine if driving based on speed threshold
-                                isDriving = (currentSpeed ?? 0) > 1.0  // You can adjust this threshold
-                                
-                                // Update speed limit when location changes significantly
-                                                       if isDriving, let location = speedMonitor.lastLocation {
-                                                           speedLimitManager.getCurrentSpeedLimit(for: location)
-                                                       }
-                            }
-                        }
-                    }
-                } else {
-                    speedMonitor.stopTrackingSpeed()
-                    activityManager.stopActivityUpdates()
-                }
-            }
-        
-            .onChange(of: isActive) { oldValue, newValue in
-                print("Braking isActive changed: \(oldValue) -> \(newValue)")
-                if isActive {
-                    speedMonitor.startTrackingSpeed { speed in
-                        DispatchQueue.main.async {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                currentSpeed = speed
-                                // Determine if driving based on speed threshold
-                                isDriving = (currentSpeed ?? 0) > 1.0  // You can adjust this threshold
-                                
-                                // Update speed limit when location changes significantly
-                                                       if isDriving, let location = speedMonitor.lastLocation {
-                                                           speedLimitManager.getCurrentSpeedLimit(for: location)
-                                                       }
-                            }
-                        }
-                    }
-                } else {
-                    speedMonitor.stopTrackingSpeed()
-                    activityManager.stopActivityUpdates()
-                }
-            }
-        
-            .onDisappear {
-                speedMonitor.stopTrackingSpeed()
-                activityManager.stopActivityUpdates()
-            }
-        
+        .onDisappear {
+            stopMonitoring()
         }
     }
-
-//#Preview {
-//    Braking(isActive)
-//}
+    
+    // Helper functions
+    private func startMonitoring() {
+        speedMonitor.startTrackingSpeed { speed in
+            DispatchQueue.main.async {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    currentSpeed = speed
+                    isDriving = (currentSpeed ?? 0) > 1.0
+                    
+                    if isDriving, let location = speedMonitor.lastLocation {
+                        speedLimitManager.getCurrentSpeedLimit(for: location)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func stopMonitoring() {
+        speedMonitor.stopTrackingSpeed()
+        activityManager.stopActivityUpdates()
+    }
+    
+    private func scoreColor(for score: Int) -> Color {
+        switch score {
+        case ..<0:
+            return AppTheme.danger
+        case 0..<50:
+            return AppTheme.warning
+        default:
+            return AppTheme.success
+        }
+    }
+    
+    private func speedColor(speed: Double) -> Color {
+        if let currentLimit = speedLimitObserver.currentSpeedLimit?.speedInMPH {
+            if speed > currentLimit + 10 {
+                return AppTheme.danger
+            } else if speed > currentLimit {
+                return AppTheme.warning
+            }
+        }
+        return .primary
+    }
+}
