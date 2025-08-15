@@ -6,22 +6,19 @@
 //
 
 import SwiftUI
-import CoreMotion
-import CoreLocation
+import CoreMotion // Motion data
+import CoreLocation // Location services
 
 struct Braking: View {
-    @State private var currentSpeed: Double? = nil
-    @State private var brakingWarning: String? = nil
-    private let activityManager = CMMotionActivityManager()
-    @State private var isDriving: Bool = false
-    @State private var count = 0
-    @State private var speedLimit: String = "Unknown"
-    @Binding var isActive: Bool
-    @ObservedObject private var speedLimitObserver = speedLimitManager
-    @ObservedObject var scoreManager = ScoreManager.shared
+    @State private var currentSpeed: Double? = nil // stores current speed
+    private let activityManager = CMMotionActivityManager() // allows for driving detection
+    @State private var isDriving: Bool = false // variable to detect when user is driving
+    @Binding var isActive: Bool // assigned from isMonitoringActive from MainTabView
+    @ObservedObject private var speedLimitObserver = speedLimitManager // observes shared speed limit
+    @ObservedObject var scoreManager = ScoreManager.shared // Accesses score from scoreManager
     
     var body: some View {
-        ZStack {
+        ZStack { // layers views on top of each other
             // Background color changes when braking hard
             if isBrakingHard && (currentSpeed ?? 0) > 0.0 {
                 Color.red.opacity(0.3)

@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @State private var isMonitoringActive = false
-    @ObservedObject var scoreManager = ScoreManager.shared
+    @State private var isMonitoringActive = false // Local variable that decides whether "Driving Mode" is active
+    @ObservedObject var scoreManager = ScoreManager.shared // Shared scoreManager instance (imported from main)
     
     var body: some View {
-        TabView {
-            NavigationStack {
+        TabView { // Bottom Tab that includes Drive, Score, History
+            NavigationStack { // First tab: Drive
                 VStack(spacing: 0) {
                     // Custom toggle for driving mode
-                    HStack {
+                    HStack { // Horizontal stack for top tab (one with toggle)
                         Image(systemName: isMonitoringActive ? "car.fill" : "car")
                             .font(.system(size: 22))
                             .foregroundColor(isMonitoringActive ? .white : .primary)
@@ -31,7 +31,7 @@ struct MainTabView: View {
                         
                         Spacer()
                         
-                        Toggle("", isOn: $isMonitoringActive)
+                        Toggle("", isOn: $isMonitoringActive) // Bind toggle to isMonitoringActive
                             .toggleStyle(SwitchToggleStyle(tint: AppTheme.success))
                     }
                     .padding()
@@ -43,8 +43,8 @@ struct MainTabView: View {
                     .padding(.top)
                     
                     if isMonitoringActive {
-                        Braking(isActive: $isMonitoringActive)
-                    } else {
+                        Braking(isActive: $isMonitoringActive) // Under the AccelerometerView file
+                    } else { // Continue the toggled off ui
                         VStack(spacing: 30) {
                             // Illustration
                             ZStack {
@@ -99,25 +99,25 @@ struct MainTabView: View {
                 .navigationBarTitleDisplayMode(.inline)
             }
             .tabItem {
-                Label("Drive", systemImage: "car.fill")
+                Label("Drive", systemImage: "car.fill") // Bottom Icon
             }
             
-            NavigationStack {
-                ScoringView()
+            NavigationStack { // Second tab: Score
+                ScoringView() // Calls ScoringView file
                     .navigationTitle("My Score")
                     .navigationBarTitleDisplayMode(.inline)
             }
             .tabItem {
-                Label("Score", systemImage: "chart.bar.fill")
+                Label("Score", systemImage: "chart.bar.fill") // Bottom Icon
             }
             
-            NavigationStack {
-                HistoryView()
+            NavigationStack { // Third tab: History
+                HistoryView() // Calls HistoryView file
                     .navigationTitle("Driving History")
                     .navigationBarTitleDisplayMode(.inline)
             }
             .tabItem {
-                Label("History", systemImage: "clock.fill")
+                Label("History", systemImage: "clock.fill") // Bottom Icon
             }
         }
         .accentColor(AppTheme.primary)

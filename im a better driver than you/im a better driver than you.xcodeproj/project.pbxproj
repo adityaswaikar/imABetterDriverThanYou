@@ -396,7 +396,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"im a better driver than you/Preview Content\"";
-				DEVELOPMENT_TEAM = XYZ8563QUB;
+				DEVELOPMENT_TEAM = ZVXRHGT924;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "\"We need your location to determine your speed and your drive safely\"";
@@ -412,7 +412,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "gadi.im-a-better-driver-than-you123325";
+				PRODUCT_BUNDLE_IDENTIFIER = "gadi.im-a-better-driver-than-you12332";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -428,7 +428,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"im a better driver than you/Preview Content\"";
-				DEVELOPMENT_TEAM = XYZ8563QUB;
+				DEVELOPMENT_TEAM = ZVXRHGT924;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "\"We need your location to determine your speed and your drive safely\"";
@@ -444,7 +444,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "gadi.im-a-better-driver-than-you123325";
+				PRODUCT_BUNDLE_IDENTIFIER = "gadi.im-a-better-driver-than-you12332";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
