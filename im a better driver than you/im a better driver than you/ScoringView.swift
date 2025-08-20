@@ -78,7 +78,7 @@ struct ScoringView: View {
                             
                             tipRow(icon: "timer", title: "Drive Consistently", description: "Maintain steady speeds and avoid rapid acceleration.")
                             
-                            tipRow(icon: "phone.slash.fill", title: "Avoid Distractions", description: "Never use your phone while driving.")
+                            tipRow(icon: "bell.slash", title: "Avoid Distractions", description: "Never use your phone while driving.")
                         }
                         .transition(.opacity.combined(with: .move(edge: .top)))
                     }

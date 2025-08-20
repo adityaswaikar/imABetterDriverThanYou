@@ -1,5 +1,5 @@
 //
-//  Braking.swift
+//  AccelerometerView.swift
 //  im a better driver than you
 //
 //  Created by Aditya Waikar on 4/12/25.
@@ -16,6 +16,9 @@ struct Braking: View {
     @Binding var isActive: Bool // assigned from isMonitoringActive from MainTabView
     @ObservedObject private var speedLimitObserver = speedLimitManager // observes shared speed limit
     @ObservedObject var scoreManager = ScoreManager.shared // Accesses score from scoreManager
+    @State private var driveTime: TimeInterval = 0      // total seconds
+    @State private var timer: Timer? = nil
+
     
     var body: some View {
         ZStack { // layers views on top of each other
@@ -64,6 +67,7 @@ struct Braking: View {
                         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
                 )
                 .padding(.horizontal)
+
                 
                 if let speed = currentSpeed {
                     // Speed Card
@@ -100,6 +104,20 @@ struct Braking: View {
                     )
                     .padding(.horizontal)
                 }
+                // Drive Time Card
+                VStack(spacing: 8) {
+                    Text(formatDriveTime(driveTime))
+                            .font(.system(size: 40, weight: .bold))
+                            .foregroundColor(.primary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(20)
+                .background(
+                    RoundedRectangle(cornerRadius: AppTheme.CardStyle.cornerRadius)
+                        .fill(Color(UIColor.secondarySystemBackground))
+                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                )
+                .padding(.horizontal)
                 
                 // Hard Braking Warning
                 if isBrakingHard && (currentSpeed ?? 0) > 0.0 {
@@ -161,6 +179,8 @@ struct Braking: View {
                         // Update the current session with speed and location
                         SessionManager.shared.updateSpeed(speed)
                         SessionManager.shared.updateLocation(location)
+                        
+                        startTimer()
                     }
                 }
             }
@@ -175,6 +195,9 @@ struct Braking: View {
         if SessionManager.shared.currentSession != nil {
             SessionManager.shared.endSession()
         }
+        
+        stopTimer()
+        driveTime = 0
     }
     
     private func scoreColor(for score: Int) -> Color {
@@ -198,4 +221,25 @@ struct Braking: View {
         }
         return .primary
     }
+    
+    private func startTimer() {
+        guard timer == nil else { return } // prevent multiple timers
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            driveTime += 1
+        }
+    }
+
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+
+    
+    private func formatDriveTime(_ time: TimeInterval) -> String {
+        let totalSeconds = Int(time)
+        let minutes = totalSeconds / 60
+        let seconds = totalSeconds % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+
 }
