@@ -57,8 +57,8 @@
 ## 📂 File Structure
 
 - `ScoreManager.swift` – Manages driving scores, breakdowns, and percentile ranking.
-- `Braking.swift` – SwiftUI view showing real-time driving score, speed, and braking warnings.
-- `Accelerometer.swift` – Tracks sudden deceleration and calculates hard braking events.
+- `AccelerometerView.swift` – SwiftUI view showing real-time driving score, speed, and braking warnings.
+- `AccelerometerManager.swift` – Tracks sudden deceleration and calculates hard braking events.
 - `HistoryView.swift` – Displays historical driving sessions and analytics.
 - `SpeedLimitManager.swift` – Fetches and converts local speed limit data from Mapbox.
 - `AppTheme.swift` – Defines consistent color schemes, font styles, and card layouts.
